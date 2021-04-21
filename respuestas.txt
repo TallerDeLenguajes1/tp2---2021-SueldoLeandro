@@ -1,0 +1,6 @@
+2)
+F) No se puede ver el archivo tp2_1_2.c porque cada rama es como un espacio de trabajo independiente de las demas, entonces si el archivo estaba en la rama 2, éste se ocultara para la rama 1.
+
+i) Al hacer gitk en Opcion_2 se puede observar los commits de ambas ramas, pero al cambiar a la rama master y hacer gitk no se ve la rama Opcion_2 ni los commits hechos por ésta.
+
+J) Luego de hacer el merge y gitk se pueden ver las dos ramas y sus commits, además en el repositorio se ven tanto el archivo tp2_1_1 como tp2_1_2
