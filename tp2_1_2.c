@@ -14,7 +14,7 @@ for(f = 0;f<N; f++)
 {
         for(c = 0;c<M; c++)
         {
-        printf("  %lf", *(mt + f * N + M));
+        printf("  %lf", *(mt + f * N + c));
 
         }
     printf("\n");
