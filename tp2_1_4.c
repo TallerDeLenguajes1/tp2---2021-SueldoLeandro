@@ -7,128 +7,223 @@ struct compu {
 int velocidad;//entre 1 y 3 Gherz
 int anio;//entre 2000 y 2017
 int cantidad;//entre 1 y 4
-char *tipo_cpu;//valores del arreglo tipos
+//char *tipo_cpu;//valores del arreglo tipos
+struct compu* siguiente;
 };
 
+typedef struct compu* Lista;
 
-
-void MostrarPC(struct compu **PC);
-void CargarPC(struct compu **PC,int x,char **tipo_cpu);
-void ListaDePC(struct compu **PC,int CantidadDePC);
-void PCMasVieja(struct compu **PC,int CantidadDePC);
-void PCMasRapida(struct compu **PC,int CantidadDePC);
+Lista crearPC();
+void MostrarPC(Lista cabecera);
+Lista CargarPC(Lista cabecera,int CantidadDePC);
+void PCMasVieja(Lista cabecera);
+void PCMasRapida(Lista cabecera);
+void Borrar(Lista cabecera);
 
 int main(void){
 
 srand(time(NULL));
 
-    int CantidadDePC=0,NoTeCerresPorfa=0;
-    char *tipos[]={"Intel", "AMD","Celeron", "Athlon", "Core","Pentium"},**tipo_cpu;
-    tipo_cpu=tipos;
+    int NoTeCerresPorfa=0,CantidadDePC=0;
 
     printf("Ingrese la cantidad de PC a guardar ( hasta 6 ): \n");
     scanf("%d",&CantidadDePC);
 
-    struct compu compu[CantidadDePC],*punteroEstructura,**PunteroAEstructura;
-    punteroEstructura = compu;
+    Lista cabecera;
 
-    punteroEstructura = (struct compu *) malloc(sizeof(struct compu)*CantidadDePC);
-    *PunteroAEstructura = punteroEstructura;
-
-
-    /*CargarPC(PunteroAEstructura,CantidadDePC,tipo_cpu);
-    MostrarPC(PunteroAEstructura);
-    ListaDePC(PunteroAEstructura,CantidadDePC);
-    PCMasVieja(PunteroAEstructura,CantidadDePC);
-    PCMasRapida(PunteroAEstructura,CantidadDePC);*/
+    cabecera = crearPC();
+    cabecera = CargarPC(cabecera,CantidadDePC);
+    MostrarPC(cabecera);
+    PCMasVieja(cabecera);
+    PCMasRapida(cabecera);
+    
 
 
-    free(punteroEstructura);
+    //Borrar(cabecera);
 
     scanf("%d",&NoTeCerresPorfa);
     return 0;
 }
 
-void MostrarPC(struct compu **PC){
-    int x=0,i=0;
 
-    printf("Que PC quiere ver (del 0 al 5): \n");
-    scanf("%d",&x);
+Lista crearPC(){
+    Lista L;
+    L = NULL;
+    return L;
+}
 
-    while ((int)*(PC+i) != x)
+
+Lista CargarPC(Lista cabecera,int CantidadDePC){
+
+for (int i = 0; i < CantidadDePC; i++)
+{
+    struct compu*nuevo;
+    nuevo = malloc(sizeof(*nuevo)*50);
+    nuevo->velocidad = 1 + rand()%(3-1);
+    nuevo->anio = 2000 + rand()%(2017-2000);
+    nuevo->cantidad = 1 + rand()%(4-1);;
+    nuevo->siguiente = cabecera;
+    cabecera = nuevo;
+    
+}
+
+    
+    return cabecera;
+}
+
+
+void MostrarPC(Lista cabecera){
+    int i=1;char procesador[10];
+
+    while (cabecera != NULL)
     {
-        i++;
+        
+        printf("La PC %d tiene las siguientes caracteristicas:\n",i);
+        printf("Velocidad: %d Gherz\n",cabecera->velocidad);
+        printf("Anio: %d\n",cabecera->anio);
+        printf("Cantidad de nucleos: %d\n",cabecera->cantidad);
+        
+        switch (i)
+            {
+            case 1:
+                strcpy(procesador,"Intel");
+                break;
+            case 2:
+                strcpy(procesador,"AMD");
+                break;
+            case 3:
+                strcpy(procesador,"Celeron");
+                break;
+            case 4:
+                strcpy(procesador,"Athlon");
+                break;
+            case 5:
+                strcpy(procesador,"Core");
+                break;
+            case 6:
+                strcpy(procesador,"Pentium");
+                break;
+
+            default:
+                break;
+            }
+        printf("Procesador: %s\n\n",procesador);
+       cabecera = cabecera->siguiente;
+       i++;
     }
     
-    printf("La PC %d tiene las siguientes caracteristicas:\n",x);
-    printf("Velocidad: %d Gherz\n",PC[i]->velocidad);
-    printf("Anio: %d\n",PC[i]->anio);
-    printf("Cantidad de nucleos: %d\n",PC[i]->cantidad);
-    printf("Procesador: %s\n",PC[i]->tipo_cpu);
+    
     return;
 }
 
-void CargarPC(struct compu **PC,int x,char **tipo_cpu){
+void PCMasVieja(Lista cabecera){
 
-    for (int i = 0; i < x; i++)
+    int anio=2020,velocidad=0,cantidad=0,i=1;
+    char procesador[10];
+    while (cabecera != NULL)
     {
-        PC[i]->velocidad = 1+rand()%(3-1);
-        PC[i]->anio = 2000+rand()%(2017-2000);
-        PC[i]->cantidad = 1+rand()%(4-1);
-        strcpy(PC[i]->tipo_cpu,tipo_cpu[i]);
-    }
-    return;
-}
-
-
-void ListaDePC(struct compu **PC,int CantidadDePC){
-    int i=0;
-
-    for (i = 0; i < CantidadDePC; i++)
-    {
-        printf("La PC %d tiene las siguientes caracteristicas:\n",i);
-        printf("Velocidad: %d Gherz\n",PC[i]->velocidad);
-        printf("Anio: %d\n",PC[i]->anio);
-        printf("Cantidad de nucleos: %d\n",PC[i]->cantidad);
-        printf("Procesador: %s\n\n\n",PC[i]->tipo_cpu);
-    }
-
-    return;
-}
-
-
-void PCMasVieja(struct compu **PC,int CantidadDePC){
-
-    int i=0,aux=0,cont=0;
-
-    for (i = 0; i < CantidadDePC; i++)
-    {
-        if (PC[i]->anio > aux)
+        if (cabecera->anio < anio)
         {   
-            cont++;
-            aux = aux + PC[i]->anio;
+            
+            velocidad = cabecera->velocidad;
+            cantidad = cabecera->cantidad;
+            anio = cabecera->anio;
+            switch (i)
+            {
+            case 1:
+                strcpy(procesador,"Intel");
+                break;
+            case 2:
+                strcpy(procesador,"AMD");
+                break;
+            case 3:
+                strcpy(procesador,"Celeron");
+                break;
+            case 4:
+                strcpy(procesador,"Athlon");
+                break;
+            case 5:
+                strcpy(procesador,"Core");
+                break;
+            case 6:
+                strcpy(procesador,"Pentium");
+                break;
+
+            default:
+                break;
+            }
         }
+        cabecera = cabecera->siguiente;
+        i++;
     }
 
-    printf("\n La Pc %d es la mas vieja: \nEs del anio: %d",cont,aux);
+    printf("\n La Pc mas vieja es del anio: %d y tiene las siguientes caracteristicas\n\n",anio);
+
+    printf("Velocidad: %d Gherz\n",velocidad);
+    printf("Anio: %d\n",anio);
+    printf("Cantidad de nucleos: %d\n",cantidad);
+    printf("Procesador: %s\n\n",procesador);
 
     return;
 }
 
-void PCMasRapida(struct compu **PC,int CantidadDePC){
+void PCMasRapida(Lista cabecera){
 
-    int i=0,aux=0,cont=0;
-
-    for (i = 0; i < CantidadDePC; i++)
+    
+    int anio=2020,velocidad=0,cantidad=0,i=1;
+    char procesador[10];
+    while (cabecera != NULL)
     {
-        if (PC[i]->velocidad > aux)
+        if (cabecera->velocidad > velocidad)
         {   
-            cont++;
-            aux = aux + PC[i]->velocidad;
+            
+            velocidad = cabecera->velocidad;
+            cantidad = cabecera->cantidad;
+            anio = cabecera->anio;
+            switch (i)
+            {
+            case 1:
+                strcpy(procesador,"Intel");
+                break;
+            case 2:
+                strcpy(procesador,"AMD");
+                break;
+            case 3:
+                strcpy(procesador,"Celeron");
+                break;
+            case 4:
+                strcpy(procesador,"Athlon");
+                break;
+            case 5:
+                strcpy(procesador,"Core");
+                break;
+            case 6:
+                strcpy(procesador,"Pentium");
+                break;
+
+            default:
+                break;
+            }
         }
+        cabecera = cabecera->siguiente;
+        
     }
 
-    printf("\n La Pc %d es la mas rapida con %d de velocidad\n",cont,aux);
+    printf("\n La Pc mas rapida es la siguiente\n\n");
 
+    printf("Velocidad: %d Gherz\n",velocidad);
+    printf("Anio: %d\n",anio);
+    printf("Cantidad de nucleos: %d\n",cantidad);
+    printf("Procesador: %s\n\n",procesador);
+
+    return;
+}
+
+void Borrar(Lista cabecera){
+
+    while (cabecera != NULL)
+    {
+       free(cabecera);
+    }
     return;
 }
